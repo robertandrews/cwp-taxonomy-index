@@ -23,7 +23,7 @@ $terms = get_terms($taxonomy);
 
 /*
 if (function_exists('custom_breadcrumbs')) {
-custom_breadcrumbs();
+    custom_breadcrumbs();
 }
  */
 
@@ -33,10 +33,10 @@ custom_breadcrumbs();
         <div class="flex-grow-1">
             <h1 class="entry-title h3" itemprop="name">
                 <?php
-// echo $taxonomy name
-$tax = get_taxonomy($taxonomy);
-echo $tax->labels->name;
-?>
+                    // echo $taxonomy name
+                    $tax = get_taxonomy($taxonomy);
+                    echo $tax->labels->name;
+                ?>
                 <span class="badge ms-2 text-body-tertiary border rounded-pill">
                     <?php echo number_format(wp_count_terms($taxonomy)); ?>
                 </span>
@@ -46,12 +46,20 @@ echo $tax->labels->name;
                 <?php if ('' != get_the_archive_description()) {echo get_the_archive_description();}?>
             </div>
             -->
-        </div>
+      </div>
     </div>
 </header>
 
 <?php
 if (!empty($terms) && !is_wp_error($terms)) {
+
+    // Create a function to sort the terms alphabetically ignoring case
+    function sort_terms_alphabetically($terms) {
+        usort($terms, function($a, $b) {
+            return strcasecmp($a->name, $b->name);
+        });
+        return $terms;
+    }
 
     echo '<ul>';
 
@@ -65,7 +73,9 @@ if (!empty($terms) && !is_wp_error($terms)) {
                 'taxonomy' => $term->taxonomy,
                 'parent' => $term->term_id
             ));
-            $sorted_child_terms = wp_list_sort($child_terms, 'name', 'ASC');
+
+            // Sort the child terms alphabetically ignoring case
+            $sorted_child_terms = sort_terms_alphabetically($child_terms);
 
             if (!empty($sorted_child_terms) && !is_wp_error($sorted_child_terms)) {
                 echo '<ul>';

@@ -47,6 +47,9 @@ function taxonomy_index_template_redirect()
 }
 add_action('template_redirect', 'taxonomy_index_template_redirect');
 
+
+
+
 /*
 
 You can have custom templates for different taxonomies. To create custom templates
