@@ -61,13 +61,16 @@ if (!empty($terms) && !is_wp_error($terms)) {
         if ($parent_id == 0) {
             echo '<li><a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
 
-            $children = get_term_children($term->term_id, $term->taxonomy);
+            $child_terms = get_terms(array(
+                'taxonomy' => $term->taxonomy,
+                'parent' => $term->term_id
+            ));
+            $sorted_child_terms = wp_list_sort($child_terms, 'name', 'ASC');
 
-            if (!empty($children) && !is_wp_error($children)) {
+            if (!empty($sorted_child_terms) && !is_wp_error($sorted_child_terms)) {
                 echo '<ul>';
 
-                foreach ($children as $child_id) {
-                    $child_term = get_term_by('id', $child_id, $term->taxonomy);
+                foreach ($sorted_child_terms as $child_term) {
                     echo '<li><a href="' . esc_url(get_term_link($child_term)) . '">' . esc_html($child_term->name) . '</a></li>';
                 }
 
